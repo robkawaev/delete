@@ -74,6 +74,13 @@ jobs:
           flutter build apk --no-shrink
           flutter build appbundle
 
+      # ? Сборка проекта для Android
+      - name: Upload to Google Play
+        uses: actions/upload-artifact@v2
+        with:
+          name: appbundle
+          path: build/app/outputs/bundle/release/app-release.aab
+
       # ? Установка нужной версии Xcode
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
