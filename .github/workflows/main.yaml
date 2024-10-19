@@ -31,16 +31,14 @@ jobs:
           distribution: 'zulu'
           java-version: ${{ env.JAVA_VERSION }}
 
-      # ? Кэширование Flutter SDK
+      # ? Кэширование Flutter SDK (Повторное использование кэша)
       - name: Cache Flutter SDK
-        id: cache-flutter
+        id: cache
         uses: actions/cache@v4
         with:
-          path: ~/flutter
-          key: flutter-${{ env.FLUTTER_VERSION }}
-          restore-keys: |
-            flutter-${{ env.FLUTTER_VERSION }}
-      
+          path: /opt/hostedtoolcache/flutter
+          key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
+
       # ? Установка Flutter (если не из кэша)
       - name: Install Flutter
         if: steps.cache.outputs.cache-hit != 'true'
@@ -80,13 +78,11 @@ jobs:
 
       # ? Кэширование Flutter SDK (Повторное использование кэша)
       - name: Cache Flutter SDK
-        id: cache-flutter
-        uses: actions/cache@v3
+        id: cache
+        uses: actions/cache@v4
         with:
-          path: ~/flutter
-          key: flutter-${{ env.FLUTTER_VERSION }}
-          restore-keys: |
-            flutter-${{ env.FLUTTER_VERSION }}
+          path: /opt/hostedtoolcache/flutter
+          key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
 
       # ? Установка Flutter (если не из кэша)
       - name: Install Flutter
@@ -124,13 +120,11 @@ jobs:
 
       # ? Кэширование Flutter SDK (Повторное использование кэша)
       - name: Cache Flutter SDK
-        id: cache-flutter
-        uses: actions/cache@v3
+        id: cache
+        uses: actions/cache@v4
         with:
-          path: ~/flutter
-          key: flutter-${{ env.FLUTTER_VERSION }}
-          restore-keys: |
-            flutter-${{ env.FLUTTER_VERSION }}
+          path: /opt/hostedtoolcache/flutter
+          key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
 
       # ? Установка Flutter (если не из кэша)
       - name: Install Flutter
