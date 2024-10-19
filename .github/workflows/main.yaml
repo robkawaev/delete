@@ -22,7 +22,7 @@ jobs:
     steps:
       # ? Подготовка репозитория
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # ? Установка JDK
       - name: Set up Java
@@ -33,12 +33,13 @@ jobs:
 
       # ? Кэширование Flutter SDK
       - name: Cache Flutter SDK
-        uses: actions/cache@v3
+        id: cache-flutter
+        uses: actions/cache@v4
         with:
           path: ~/flutter
-          key: flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+          key: flutter-${{ env.FLUTTER_VERSION }}
           restore-keys: |
-            flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+            flutter-${{ env.FLUTTER_VERSION }}
       
       # ? Установка Flutter (если не из кэша)
       - name: Install Flutter
@@ -79,12 +80,13 @@ jobs:
 
       # ? Кэширование Flutter SDK (Повторное использование кэша)
       - name: Cache Flutter SDK
+        id: cache-flutter
         uses: actions/cache@v3
         with:
           path: ~/flutter
-          key: flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+          key: flutter-${{ env.FLUTTER_VERSION }}
           restore-keys: |
-            flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+            flutter-${{ env.FLUTTER_VERSION }}
 
       # ? Установка Flutter (если не из кэша)
       - name: Install Flutter
@@ -122,12 +124,13 @@ jobs:
 
       # ? Кэширование Flutter SDK (Повторное использование кэша)
       - name: Cache Flutter SDK
+        id: cache-flutter
         uses: actions/cache@v3
         with:
           path: ~/flutter
-          key: flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+          key: flutter-${{ env.FLUTTER_VERSION }}
           restore-keys: |
-            flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+            flutter-${{ env.FLUTTER_VERSION }}
 
       # ? Установка Flutter (если не из кэша)
       - name: Install Flutter
