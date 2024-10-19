@@ -75,6 +75,6 @@ jobs:
       - name: Push to Releases
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/apk/release/*,build/ios/iphoneos/app.ipa"
+          artifacts: "build/app/outputs/apk/release/*,build/app/outputs/bundle/release/*,build/ios/iphoneos/app.ipa"
           tag: v${{ env.NEW_VERSION }}
           token: ${{ secrets.TOKEN }}
