@@ -60,9 +60,9 @@ jobs:
       # ? Подпись проекта Android
       - name: Sign Android
         run: |
+          echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ${{env.PROPERTIES_PATH}}
           echo keyPassword=\${{ secrets.KEY_PASSWORD }} > ${{env.PROPERTIES_PATH}}
           echo storePassword=\${{ secrets.KEY_PASSWORD }} >> ${{env.PROPERTIES_PATH}}
-          echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ${{env.PROPERTIES_PATH}}
           echo "${{ secrets.KEY_STORE }}" | base64 --decode > ${{env.KEY_PATH}}
 
       # ? Сборка проекта для Android

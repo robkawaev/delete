@@ -52,9 +52,9 @@ android {
 
     signingConfigs {
         release {
+            storeFile = file('key.jks')
             keyAlias = keystoreProperties['keyAlias']
             keyPassword = keystoreProperties['keyPassword']
-            storeFile = keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
             storePassword = keystoreProperties['storePassword']
         }
     }
