@@ -57,14 +57,16 @@ jobs:
           sed -i '' "s/version: .*/version: ${NEW_VERSION}/" pubspec.yaml
           echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
 
-      # ? Подпись проекта Android
-      - name: Sign Android
+      # ? Создание key.properties
+      - name: Create key.properties
         run: |
+          echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ${{env.PROPERTIES_PATH}}
           echo keyPassword=\${{ secrets.KEY_PASSWORD }} > ${{env.PROPERTIES_PATH}}
           echo storePassword=\${{ secrets.KEY_PASSWORD }} >> ${{env.PROPERTIES_PATH}}
-          echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ${{env.PROPERTIES_PATH}}
-          
-      - run: echo "${{ secrets.KEY_STORE }}" | base64 --decode > ${{env.KEY_PATH}}
+      
+      # ? Декодирование key.jks
+      - name: Decode key.jks
+        run: echo "${{ secrets.KEY_STORE }}" | base64 --decode > ${{env.KEY_PATH}}
 
       # ? Сборка проекта для Android
       - name: Build Android
@@ -93,6 +95,6 @@ jobs:
       - name: Push to Releases
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/apk/release/*,build/app/outputs/bundle/release/*,build/ios/iphoneos/app.ipa"
+          artifacts: "build/app/outputs/apk/release/app-release.apk,build/app/outputs/bundle/release/app-release.aab,build/ios/iphoneos/app.ipa"
           tag: v${{ env.NEW_VERSION }}
           token: ${{ secrets.TOKEN }}
