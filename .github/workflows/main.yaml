@@ -1,0 +1,89 @@
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+  push:
+    branches:
+      - main
+      - master
+      - develop
+name: "Build & Release"
+jobs:
+  build:
+    name: Build & Release
+    runs-on: macos-14
+    steps:
+      # ? Подготовка репозитория
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # ? Установка JDK
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17.0.11'
+
+      # ? Установка Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: "3.22.2"
+
+      # ? Установка зависимостей Flutter
+      - name: Flutter Pub Get
+        run: flutter clean && flutter pub get
+
+      # ? Установка версии сборки
+      - name: Set up Bundle
+        id: version_setup # Delete this ID if you don't need it
+        run: |
+          VERSION=$(grep 'version: ' pubspec.yaml | sed 's/version: \([0-9.]*\)+[0-9]*/\1/')
+          BUILD_NUMBER=${{ github.run_number }}
+          NEW_VERSION="${VERSION}+${BUILD_NUMBER}"
+          sed -i '' "s/version: .*/version: ${NEW_VERSION}/" pubspec.yaml
+          echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
+
+      # ? Сборка проекта для Android
+      # - name: Build Android
+      #   run: flutter build apk --no-shrink
+      #   run: flutter build appbundle
+
+      # ? Установка нужной версии Xcode
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.0.1'
+      
+      # ? Подготовка CocoaPods для iOS
+      # - name: Prepare CocoaPods
+      #   run: |
+      #     cd ./ios &&
+      #     pod deintegrate --verbose &&
+      #     rm -f Podfile.lock &&
+      #     sudo gem install ffi --verbose &&
+      #     pod repo update --verbose &&
+      #     flutter pub get &&
+      #     pod install --verbose &&
+      #     cd ..
+
+      # ? Сборка проекта для iOS
+      - name: Build iOS
+        run: |
+          flutter build ios --no-codesign
+          cd build/ios/iphoneos
+          mkdir Payload
+          cd Payload
+          ln -s ../Runner.app
+          cd ..
+          zip -r app.ipa Payload
+
+      # ? Загрузка изменений в GitHub Releases
+      - name: Push to Releases
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/apk/release/*,build/ios/iphoneos/app.ipa"
+          tag: v${{ env.NEW_VERSION }}
+          token: ${{ secrets.TOKEN }}
