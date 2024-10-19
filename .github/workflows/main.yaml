@@ -33,6 +33,7 @@ jobs:
 
       # ? Кэширование Flutter SDK
       - name: Cache Flutter SDK
+        id: cache-flutter
         uses: actions/cache@v4
         with:
           path: ~/flutter
@@ -79,6 +80,7 @@ jobs:
 
       # ? Кэширование Flutter SDK (Повторное использование кэша)
       - name: Cache Flutter SDK
+        id: cache-flutter
         uses: actions/cache@v3
         with:
           path: ~/flutter
@@ -122,6 +124,7 @@ jobs:
 
       # ? Кэширование Flutter SDK (Повторное использование кэша)
       - name: Cache Flutter SDK
+        id: cache-flutter
         uses: actions/cache@v3
         with:
           path: ~/flutter
