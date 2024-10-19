@@ -36,9 +36,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/flutter
-          key: flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+          key: flutter-${{ env.FLUTTER_VERSION }}
           restore-keys: |
-            flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+            flutter-${{ env.FLUTTER_VERSION }}
       
       # ? Установка Flutter (если не из кэша)
       - name: Install Flutter
@@ -82,9 +82,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/flutter
-          key: flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+          key: flutter-${{ env.FLUTTER_VERSION }}
           restore-keys: |
-            flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+            flutter-${{ env.FLUTTER_VERSION }}
 
       # ? Установка Flutter (если не из кэша)
       - name: Install Flutter
@@ -125,9 +125,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/flutter
-          key: flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+          key: flutter-${{ env.FLUTTER_VERSION }}
           restore-keys: |
-            flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+            flutter-${{ env.FLUTTER_VERSION }}
 
       # ? Установка Flutter (если не из кэша)
       - name: Install Flutter
