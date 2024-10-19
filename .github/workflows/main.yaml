@@ -16,6 +16,7 @@ env:
   FLUTTER_VERSION: "3.22.2"
   FLUTTER_CHANNEL: "stable"
   PROPERTIES_PATH: "./android/key.properties"
+  KEY_PATH: "./android/app/key.jks"
 
 jobs:
   build:
@@ -55,6 +56,14 @@ jobs:
           NEW_VERSION="${VERSION}+${BUILD_NUMBER}"
           sed -i '' "s/version: .*/version: ${NEW_VERSION}/" pubspec.yaml
           echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
+
+      # ? Подпись проекта Android
+      - name: Sign Android
+        run: |
+          echo keyPassword=\${{ secrets.KEY_PASSWORD }} > ${{env.PROPERTIES_PATH}}
+          echo storePassword=\${{ secrets.KEY_PASSWORD }} >> ${{env.PROPERTIES_PATH}}
+          echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ${{env.PROPERTIES_PATH}}
+          echo "${{ secrets.KEY_STORE }}" | base64 --decode > ${{env.KEY_PATH}}
 
       # ? Сборка проекта для Android
       - name: Build Android
