@@ -77,6 +77,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      # ? Кэширование Flutter SDK (Повторное использование кэша)
+      - name: Cache Flutter SDK
+        uses: actions/cache@v3
+        with:
+          path: ~/flutter
+          key: flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+          restore-keys: |
+            flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+
+      # ? Установка Flutter (если не из кэша)
+      - name: Install Flutter
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
       # ? Создание key.properties
       - name: Create key.properties
         run: |
@@ -102,6 +119,23 @@ jobs:
       # ? Подготовка репозитория
       - name: Checkout
         uses: actions/checkout@v3
+
+      # ? Кэширование Flutter SDK (Повторное использование кэша)
+      - name: Cache Flutter SDK
+        uses: actions/cache@v3
+        with:
+          path: ~/flutter
+          key: flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+          restore-keys: |
+            flutter-${{ env.FLUTTER_VERSION }}-${{ runner.os }}-${{ env.FLUTTER_CHANNEL }}
+
+      # ? Установка Flutter (если не из кэша)
+      - name: Install Flutter
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          flutter-version: ${{ env.FLUTTER_VERSION }}
 
       # ? Сборка проекта для iOS
       - name: Build iOS
