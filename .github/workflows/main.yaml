@@ -22,7 +22,7 @@ jobs:
     steps:
       # ? Подготовка репозитория
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # ? Установка JDK
       - name: Set up Java
@@ -33,7 +33,7 @@ jobs:
 
       # ? Кэширование Flutter SDK
       - name: Cache Flutter SDK
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/flutter
           key: flutter-${{ env.FLUTTER_VERSION }}
