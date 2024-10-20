@@ -37,6 +37,13 @@ jobs:
       - name: Save Version
         run: echo "NEW_VERSION=${NEW_VERSION}" > version.txt
 
+      # ? Загрузка версии как артефакт
+      - name: Upload Version
+        uses: actions/upload-artifact@v4
+        with:
+          name: version-artifact
+          path: version.txt
+
   android:
     name: Android
     needs: [version]
@@ -63,19 +70,19 @@ jobs:
           flutter-version: ${{env.FLUTTER_VERSION}}
 
       # ? Установка зависимостей Flutter
-      - name: Flutter Pub Get
+      - name: Flutter pub get
         run: |
           flutter clean
           flutter pub get
 
       # ? Загрузка версии
-      - name: Download Version
+      - name: Download version
         uses: actions/download-artifact@v4
         with:
           name: version-artifact
 
       # ? Считывание версии
-      - name: Read Version
+      - name: Read version
         id: read_version
         run: echo "NEW_VERSION=$(cat version.txt | cut -d '=' -f2)" >> $GITHUB_ENV
 
@@ -134,19 +141,19 @@ jobs:
           flutter-version: ${{env.FLUTTER_VERSION}}
 
       # ? Установка зависимостей Flutter
-      - name: Flutter Pub Get
+      - name: Flutter pub get
         run: |
           flutter clean
           flutter pub get
 
       # ? Загрузка версии
-      - name: Download Version
+      - name: Download version
         uses: actions/download-artifact@v4
         with:
           name: version-artifact
 
       # ? Считывание версии
-      - name: Read Version
+      - name: Read version
         id: read_version
         run: echo "NEW_VERSION=$(cat version.txt | cut -d '=' -f2)" >> $GITHUB_ENV
 
@@ -186,13 +193,13 @@ jobs:
     runs-on: macos-14
     steps:
       # ? Загрузка версии
-      - name: Download Version
+      - name: Download version
         uses: actions/download-artifact@v4
         with:
           name: version-artifact
 
       # ? Считывание версии
-      - name: Read Version
+      - name: Read version
         id: read_version
         run: echo "NEW_VERSION=$(cat version.txt | cut -d '=' -f2)" >> $GITHUB_ENV
 
