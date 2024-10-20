@@ -116,6 +116,17 @@ jobs:
           path: |
             build/app/outputs/apk/release/app-release.apk
             build/app/outputs/bundle/release/app-release.aab
+  
+  upload-android:
+    name: Upload Android
+    needs: [android]
+    runs-on: macos-14
+    steps:
+      # ? Загрузка артефактов для Android
+      - name: Download Android Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: android-artifacts
 
   ios:
     name: iOS
@@ -182,7 +193,7 @@ jobs:
 
   release:
     name: Release
-    needs: [android, ios]
+    needs: [upload-android, ios]
     runs-on: macos-14
     steps:
       # ? Загрузка версии
