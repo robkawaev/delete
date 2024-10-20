@@ -18,7 +18,6 @@ env:
 jobs:
   android:
     name: Android
-    needs: [setup]
     runs-on: macos-14
     steps:
       # ? Подготовка репозитория
@@ -75,7 +74,6 @@ jobs:
 
   ios:
     name: iOS
-    needs: [setup]
     runs-on: macos-14
     steps:
       # ? Подготовка репозитория
