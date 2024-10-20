@@ -85,7 +85,6 @@ jobs:
 
       # ? Считывание версии
       - name: Read version
-        id: read_version
         run: echo "NEW_VERSION=$(cat version.txt | cut -d '=' -f2)" >> $GITHUB_ENV
 
       # ? Установка версии
@@ -129,11 +128,22 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: android-artifacts
+
+      # ? Загрузка версии
+      - name: Download version
+        uses: actions/download-artifact@v4
+        with:
+          name: version-artifact
+
+      # ? Считывание версии
+      - name: Read version
+        run: echo "NEW_VERSION=$(cat version.txt | cut -d '=' -f2)" >> $GITHUB_ENV
       
       # ? Загрузка в Google Play
       - name: Upload to Google Play 
         uses: r0adkll/upload-google-play@v1
         with:
+          releaseName: $NEW_VERSION
           track: ${{env.GOOGLE_PLAY_TRACK}}
           status: ${{env.GOOGLE_PLAY_STATUS}}
           packageName: ${{env.PACKAGE_NAME}}
@@ -177,7 +187,6 @@ jobs:
 
       # ? Считывание версии
       - name: Read version
-        id: read_version
         run: echo "NEW_VERSION=$(cat version.txt | cut -d '=' -f2)" >> $GITHUB_ENV
 
       # ? Установка версии
@@ -227,7 +236,6 @@ jobs:
 
       # ? Считывание версии
       - name: Read version
-        id: read_version
         run: echo "NEW_VERSION=$(cat version.txt | cut -d '=' -f2)" >> $GITHUB_ENV
 
       # ? Загрузка артефактов для Android
