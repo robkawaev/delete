@@ -127,6 +127,15 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: android-artifacts
+      
+      # ? Загрузка в Google Play
+      - name: Upload to Google Play 
+        uses: r0adkll/upload-google-play@v1
+        with:
+          track: qa
+          packageName: ${{env.PACKAGE_NAME}}
+          releaseFiles: bundle/release/app-release.aab
+          serviceAccountJson: ${{ secrets.GOOGLE_PLAY_JSON }}
 
   ios:
     name: iOS
