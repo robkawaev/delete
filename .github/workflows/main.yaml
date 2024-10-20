@@ -158,7 +158,7 @@ jobs:
           name: ios-artifacts
           path: build/ios/iphoneos/app.ipa
 
-  relese:
+  release:
     name: Release
     needs: [android, ios]
     runs-on: macos-14
@@ -174,16 +174,22 @@ jobs:
         id: read_version
         run: echo "NEW_VERSION=$(cat version.txt | cut -d '=' -f2)" >> $GITHUB_ENV
 
-      # ? Загрузка артефактов
+      # ? Загрузка артефактов для Android
       - name: Download Android Artifacts
         uses: actions/download-artifact@v4
         with:
           name: android-artifacts
 
+      # ? Загрузка артефактов для iOS
       - name: Download iOS Artifacts
         uses: actions/download-artifact@v4
         with:
           name: ios-artifacts
+
+      # ? Чек папки
+      - name: List files
+        run: |
+          ls -R
 
       # ? Загрузка изменений в GitHub Releases
       - name: Push to Releases
