@@ -53,18 +53,6 @@ jobs:
           BUILD_NUMBER=${{ github.run_number }}
           NEW_VERSION="${VERSION}+${BUILD_NUMBER}"
           sed -i '' "s/version: .*/version: ${NEW_VERSION}/" pubspec.yaml
-          echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
-
-      # ? Сохранение версии сборки как артефакт
-      - name: Save Version
-        run: echo "NEW_VERSION=${NEW_VERSION}" > version.txt
-
-      # ? Загрузка версии как артефакт
-      - name: Upload Version
-        uses: actions/upload-artifact@v4
-        with:
-          name: version-artifact
-          path: version.txt
 
       # ? Создание key.properties
       - name: Create key.properties
