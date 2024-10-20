@@ -20,14 +20,6 @@ jobs:
     name: Setup
     runs-on: macos-14
     steps:
-      # ? Установка JDK
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          cache: 'gradle'
-          distribution: 'zulu'
-          java-version: ${{env.JAVA_VERSION}}
-
       # ? Установка Flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
