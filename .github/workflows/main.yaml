@@ -143,7 +143,7 @@ jobs:
       - name: Upload to Google Play 
         uses: r0adkll/upload-google-play@v1
         with:
-          releaseName: $NEW_VERSION
+          releaseName: v${{ env.NEW_VERSION }}
           track: ${{env.GOOGLE_PLAY_TRACK}}
           status: ${{env.GOOGLE_PLAY_STATUS}}
           packageName: ${{env.PACKAGE_NAME}}
