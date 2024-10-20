@@ -11,6 +11,7 @@ env:
   XCODE_VERSION: "15.0.1"
   FLUTTER_VERSION: "3.22.2"
   FLUTTER_CHANNEL: "stable"
+  GOOGLE_PLAY_TRACK: "draft"
   PACKAGE_NAME: "com.robertkawaev.flutter_template"
   PROPERTIES_PATH: "./android/key.properties"
   KEY_PATH: "./android/app/key.jks"
@@ -132,7 +133,7 @@ jobs:
       - name: Upload to Google Play 
         uses: r0adkll/upload-google-play@v1
         with:
-          track: internal
+          track: ${{env.GOOGLE_PLAY_TRACK}}
           packageName: ${{env.PACKAGE_NAME}}
           releaseFiles: bundle/release/app-release.aab
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_JSON }}
