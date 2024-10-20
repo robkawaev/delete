@@ -191,9 +191,20 @@ jobs:
           name: ios-artifacts
           path: build/ios/iphoneos/app.ipa
 
+  upload-ios:
+    name: Upload iOS
+    needs: [ios]
+    runs-on: macos-14
+    steps:
+      # ? Загрузка артефактов для iOS
+      - name: Download iOS Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-artifacts
+
   release:
     name: Release
-    needs: [upload-android, ios]
+    needs: [upload-android, upload-ios]
     runs-on: macos-14
     steps:
       # ? Загрузка версии
