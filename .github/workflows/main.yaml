@@ -55,6 +55,15 @@ jobs:
           sed -i '' "s/version: .*/version: ${NEW_VERSION}/" pubspec.yaml
           echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
 
+       # ? Сохранение версии сборки как артефакт
+      - name: Save Version
+        run: echo "NEW_VERSION=${NEW_VERSION}" > version.txt
+      - name: Upload Version
+        uses: actions/upload-artifact@v3
+        with:
+          name: version-artifact
+          path: version.txt
+
       # ? Создание key.properties
       - name: Create key.properties
         run: |
@@ -71,6 +80,15 @@ jobs:
         run: |
           flutter build apk --no-shrink
           flutter build appbundle
+
+      # ? Загрузка артефактов
+      - name: Upload Android Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-artifacts
+          path: |
+            build/app/outputs/apk/release/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
 
   ios:
     name: iOS
@@ -109,6 +127,15 @@ jobs:
           sed -i '' "s/version: .*/version: ${NEW_VERSION}/" pubspec.yaml
           echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
 
+      # ? Сохранение версии сборки как артефакт
+      - name: Save Version
+        run: echo "NEW_VERSION=${NEW_VERSION}" > version.txt
+      - name: Upload Version
+        uses: actions/upload-artifact@v3
+        with:
+          name: version-artifact
+          path: version.txt
+
       # ? Сборка проекта для iOS
       - name: Build iOS
         run: |
@@ -120,15 +147,47 @@ jobs:
           cd ..
           zip -r app.ipa Payload
 
+      # ? Загрузка артефактов
+      - name: Upload iOS Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-artifacts
+          path: build/ios/iphoneos/app.ipa
+
   relese:
     name: Release
     needs: [android, ios]
     runs-on: macos-14
     steps:
+      # ? Загрузка версии
+      - name: Download Version
+        uses: actions/download-artifact@v3
+        with:
+          name: version-artifact
+
+      # ? Считывание версии
+      - name: Read Version
+        id: read_version
+        run: echo "NEW_VERSION=$(cat version.txt | cut -d '=' -f2)" >> $GITHUB_ENV
+
+      # ? Загрузка артефактов
+      - name: Download Android Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: android-artifacts
+
+      - name: Download iOS Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ios-artifacts
+
       # ? Загрузка изменений в GitHub Releases
       - name: Push to Releases
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/apk/release/app-release.apk,build/app/outputs/bundle/release/app-release.aab,build/ios/iphoneos/app.ipa"
+          artifacts: |
+            build/app/outputs/apk/release/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
+            build/ios/iphoneos/app.ipa
           tag: v${{ env.NEW_VERSION }}
           token: ${{ secrets.TOKEN }}
