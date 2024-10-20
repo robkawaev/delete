@@ -22,47 +22,40 @@ jobs:
     steps:
       # ? Подготовка репозитория
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       # ? Установка JDK
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: ${{ env.JAVA_VERSION }}
+          java-version: ${{env.JAVA_VERSION}}
 
-      # ? Кэширование Flutter SDK (Повторное использование кэша)
-      - name: Cache Flutter SDK
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: /opt/hostedtoolcache/flutter
-          key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
-
-      # ? Установка Flutter (если не из кэша)
-      - name: Install Flutter
-        if: steps.cache.outputs.cache-hit != 'true'
+      # ? Установка Flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: ${{ env.FLUTTER_CHANNEL }}
-          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{env.FLUTTER_CHANNEL}}
+          flutter-version: ${{env.FLUTTER_VERSION}}
 
       # ? Установка зависимостей Flutter
       - name: Flutter Pub Get
-        run: flutter pub get
+        run: |
+          flutter clean
+          flutter pub get
 
       # ? Установка нужной версии Xcode
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: ${{ env.XCODE_VERSION }}
+          xcode-version: ${{env.XCODE_VERSION}}
 
       # ? Установка версии сборки
       - name: Set up Bundle
-        id: version_setup
+        id: version_setup # Delete this ID if you don't need it
         run: |
           VERSION=$(grep 'version: ' pubspec.yaml | sed 's/version: \([0-9.]*\)+[0-9]*/\1/')
-          BUILD_NUMBER=$GITHUB_RUN_NUMBER
+          BUILD_NUMBER=${{ github.run_number }}
           NEW_VERSION="${VERSION}+${BUILD_NUMBER}"
           sed -i '' "s/version: .*/version: ${NEW_VERSION}/" pubspec.yaml
           echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
@@ -72,36 +65,16 @@ jobs:
     needs: [setup]
     runs-on: macos-14
     steps:
-      # ? Подготовка репозитория
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      # ? Кэширование Flutter SDK (Повторное использование кэша)
-      - name: Cache Flutter SDK
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: /opt/hostedtoolcache/flutter
-          key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
-
-      # ? Установка Flutter (если не из кэша)
-      - name: Install Flutter
-        if: steps.cache.outputs.cache-hit != 'true'
-        uses: subosito/flutter-action@v2
-        with:
-          channel: ${{ env.FLUTTER_CHANNEL }}
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-
       # ? Создание key.properties
       - name: Create key.properties
         run: |
-          echo keyPassword=\${{ secrets.KEY_PASSWORD }} > ${{ env.PROPERTIES_PATH }}
-          echo storePassword=\${{ secrets.KEY_PASSWORD }} >> ${{ env.PROPERTIES_PATH }}
-          echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ${{ env.PROPERTIES_PATH }}
+          echo keyPassword=\${{ secrets.KEY_PASSWORD }} > ${{env.PROPERTIES_PATH}}
+          echo storePassword=\${{ secrets.KEY_PASSWORD }} >> ${{env.PROPERTIES_PATH}}
+          echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ${{env.PROPERTIES_PATH}}
       
       # ? Создание key.jks
       - name: Create key.jks
-        run: echo "${{ secrets.KEY_STORE }}" | base64 --decode > ${{ env.KEY_PATH }}
+        run: echo "${{ secrets.KEY_STORE }}" | base64 --decode > ${{env.KEY_PATH}}
 
       # ? Сборка проекта для Android
       - name: Build Android
@@ -114,26 +87,6 @@ jobs:
     needs: [setup]
     runs-on: macos-14
     steps:
-      # ? Подготовка репозитория
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      # ? Кэширование Flutter SDK (Повторное использование кэша)
-      - name: Cache Flutter SDK
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: /opt/hostedtoolcache/flutter
-          key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
-
-      # ? Установка Flutter (если не из кэша)
-      - name: Install Flutter
-        if: steps.cache.outputs.cache-hit != 'true'
-        uses: subosito/flutter-action@v2
-        with:
-          channel: ${{ env.FLUTTER_CHANNEL }}
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-
       # ? Сборка проекта для iOS
       - name: Build iOS
         run: |
@@ -145,7 +98,7 @@ jobs:
           cd ..
           zip -r app.ipa Payload
 
-  release:
+  relese:
     name: Release
     needs: [android, ios]
     runs-on: macos-14
